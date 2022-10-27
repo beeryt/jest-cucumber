@@ -37,7 +37,7 @@ export const createAutoBindSteps = (jestLike: IJestLike) => {
                 const scenarios = [...feature.scenarios, ...scenarioOutlineScenarios];
 
                 scenarios.forEach((scenario) => {
-                    test(scenario.title, (options) => {
+                    describe(scenario.title, () => {
                         scenario.steps.forEach((step, stepIndex) => {
                             const matches = globalSteps
                                 .filter((globalStep) => matchSteps(step.stepText, globalStep.stepMatcher));
@@ -45,7 +45,9 @@ export const createAutoBindSteps = (jestLike: IJestLike) => {
                             if (matches.length === 1) {
                                 const match = matches[0];
 
+                                test(match.stepMatcher, (options) =>{
                                 options.defineStep(match.stepMatcher, match.stepFunction);
+                                })
                             } else if (matches.length === 0) {
                                 const stepCode = generateStepCode(scenario.steps, stepIndex, false);
                                 // tslint:disable-next-line:max-line-length
